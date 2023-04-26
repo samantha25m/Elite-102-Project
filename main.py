@@ -3,19 +3,20 @@ import functools
 ###functions needed: functions for all tasks (check balance, deposit, withdraw, create account, delete account, modify account) and create tables for account data.####
 ##to do:
 #delete account?
-# # help: how to make user check cursor.length ///
-# # unkown error with create account? no idea what it is mad about
+# # help: how to make user check cursor.length /// would my new solution work? (can't test until create account works)
+# # # MAIN ISSUE: unkown error with create account? no idea what it is mad about
 current_user = 0
 exit = False
 exists = False
 
 
 #### PROBLEM IS WITH THIS
-def create_account(connection, user, pin):
+def create_account(connection, new_user, new_pin):
     print('\nCreating an account...\n')
     cursor=connection.cursor()
-    addData="INSERT INTO account_table (balance, username, pin) VALUES (0, %s, %s,);"
-    cursor.execute(addData, (user,), (pin,))
+    addData="INSERT INTO account_table (balance, username, pin) VALUES (0, %s, %s,)"
+    #is the problem that it needs to randomly generate an id in 'idaccount'? if so how do I do that??
+    cursor.execute(addData, (new_user,), (new_pin,))
     print('\n~ New user created ~\n')
 ########
 
@@ -84,7 +85,7 @@ def withdraw(connection, current_user):
     minus = int(input('How much would you like to withdraw?\n> '))
     cursor=connection.cursor()
     balance_query = "SELECT balance FROM account_table WHERE username=%s"
-    cursor.execute(balance_query)
+    cursor.execute(balance_query, (current_user,))
     for item in cursor:
         to_minus = item
     int_base = functools.reduce(lambda sub, ele: sub * 10 + ele, to_minus)
@@ -159,7 +160,7 @@ while exit==False:
         print('~ Exiting program... ~')
         exit = True
     else:
-        print('Next time please follow instructions! Exiting program...')
+        print('\nNext time please follow instructions! Exiting program...\n')
         exit = True
 
 connection.close()
