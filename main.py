@@ -1,10 +1,6 @@
 import mysql.connector
 import functools
 ###functions needed: functions for all tasks (check balance, deposit, withdraw, create account, delete account, modify account) and create tables for account data.####
-##to do:
-#delete account?
-# # help: how to make user check cursor.length /// would my new solution work? (can't test until create account works)
-# # # MAIN ISSUE: unkown error with create account? no idea what it is mad about
 current_user = 0
 exit = False
 exists = False
@@ -70,8 +66,9 @@ def check_balance(connection, current_user):
     testQuery= "SELECT balance FROM account_table WHERE username = %s"
     cursor.execute(testQuery, (current_user,))
     for item in cursor:
-        #if time, make it so it doesn't print a tuple, convert to int for neatness
-        print(f'Your balance is {item}')
+        balance_tuple = item
+    balance_int = functools.reduce(lambda sub, ele: sub * 10 + ele, balance_tuple)
+    print(f'Your balance is {balance_int}')
     cursor.close()
 
 def deposit(connection, current_user):
